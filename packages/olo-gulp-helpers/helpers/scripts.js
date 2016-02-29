@@ -28,8 +28,8 @@ function createBundle(bundleName, bundleFiles, outputPath, currentDirectory, cat
     .pipe(gulpif(catchErrors, plumber()))
     .pipe(sourcemaps.init())
     .pipe(babel())
-    .pipe(concat({path: bundleName, cwd: currentDirectory}))
     .pipe(uglify())
+    .pipe(concat({path: bundleName, cwd: currentDirectory}))
     .pipe(rev())
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(path.join(outputPath)));
