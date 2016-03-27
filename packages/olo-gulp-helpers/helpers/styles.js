@@ -18,7 +18,7 @@ function createBundle(bundleName, bundleFiles, outputPath, currentDirectory, cat
     .pipe(sass({
       outputStyle: 'compressed'
     }))
-    .pipe(concat({path: bundleName, cwd: currentDirectory}))
+    .pipe(concat({ path: bundleName, cwd: currentDirectory }))
     .pipe(rev())
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(path.join(outputPath)));
