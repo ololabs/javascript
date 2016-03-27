@@ -1,0 +1,7 @@
+language: node_js
+node_js:
+  - "5"
+env:
+  - PACKAGE_DIR=packages/eslint-config-olo
+  - PACKAGE_DIR=packages/olo-gulp-helpers
+script: cd $PACKAGE_DIR && npm install && npm run lint
