@@ -1,0 +1,9 @@
+{
+  "extends": "olo/legacy",
+  "env": {
+    "node": true
+  },
+  "rules": {
+    "no-console": 0
+  }
+}

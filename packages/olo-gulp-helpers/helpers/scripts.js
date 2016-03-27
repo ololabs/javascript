@@ -2,7 +2,6 @@
 
 var path = require('path');
 var process = require('process');
-var merge = require('merge-stream');
 var gulp = require('gulp');
 var eslint = require('gulp-eslint');
 var concat = require('gulp-concat');
@@ -29,7 +28,7 @@ function createBundle(bundleName, bundleFiles, outputPath, currentDirectory, cat
     .pipe(sourcemaps.init())
     .pipe(babel())
     .pipe(uglify())
-    .pipe(concat({path: bundleName, cwd: currentDirectory}))
+    .pipe(concat({ path: bundleName, cwd: currentDirectory }))
     .pipe(rev())
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(path.join(outputPath)));

@@ -56,8 +56,6 @@ function bundle(options, catchErrors) {
       cwd: ''
     }))
     .pipe(gulp.dest('./'));
-  
-  return merge(scriptBundleTask, styleBundleTask);
 }
 
 function watch(incrementalFilesToWatch, bundleOptions) {
@@ -83,9 +81,6 @@ function arrayify(input) {
 }
 
 function lint(options) {
-  var defaults = {
-    scripts: './Scripts/**/*.js'
-  };
   var config = Object.assign({}, bundleDefaults, options);
   var scripts = arrayify(config.scripts).map(function(localScriptPath) {
     return path.join(currentDirectory, localScriptPath);
