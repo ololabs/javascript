@@ -7,4 +7,5 @@ This repository contains packages and guides relevant to JavaScript development 
 ## Packages
 
 - [eslint-config-olo](packages/eslint-config-olo)
+- [tslint-config-olo](packages/tslint-config-olo)
 - [olo-gulp-helpers](packages/olo-gulp-helpers)

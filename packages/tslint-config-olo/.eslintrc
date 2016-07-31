@@ -1,0 +1,6 @@
+{
+  "extends": "olo",
+  "env": {
+    "node": true
+  }
+}
