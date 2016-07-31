@@ -1,0 +1,31 @@
+{
+  "name": "tslint-config-olo",
+  "version": "0.1.0",
+  "description": "Olo's TSLint configs",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ololabs/javascript"
+  },
+  "keywords": [
+    "tslint",
+    "tslintconfig",
+    "config",
+    "olo",
+    "javascript",
+    "typescript"
+  ],
+  "author": "Olo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ololabs/javascript/issues"
+  },
+  "homepage": "https://github.com/ololabs/javascript",
+  "devDependencies": {
+    "eslint": "^2.5.1",
+    "eslint-config-olo": "^0.1.1"
+  }
+}
