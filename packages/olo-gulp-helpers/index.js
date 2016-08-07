@@ -5,6 +5,7 @@ var process = require('process');
 var merge = require('merge-stream');
 var gulp = require('gulp');
 var rev = require('gulp-rev');
+var _ = require('lodash');
 var scriptHelpers = require('./helpers/scripts');
 var styleHelpers = require('./helpers/styles');
 
@@ -13,6 +14,14 @@ var bundleDefaults = {
   assetConfigPath: './asset-config.json',
   outputPath: './Content/bundles/',
   bundlesForFile: null
+};
+var karmaDefaults = {
+  frameworks: ['mocha', 'chai', 'sinon-chai'],
+  watch: false,
+  webpack: {
+    loaders: [],
+    externals: {}
+  }
 };
 
 function getBundles(assetConfigFullPath, bundlesForFile) {
@@ -37,25 +46,43 @@ function getBundles(assetConfigFullPath, bundlesForFile) {
   }, {});
 }
 
-function bundle(options, catchErrors) {
+function getWebpackBundles(assetConfigFullPath) {
+  var allBundles = require(assetConfigFullPath).webpack || {};
+  
+  return Object.keys(allBundles).reduce(function (bundles, name) {
+    bundles[name] = allBundles[name].startsWith('./')
+      ? allBundles[name] 
+      : ('./' + allBundles[name]);
+      
+    return bundles;
+  }, {});
+}
+
+function bundle(options, watchMode) {
   var config = Object.assign({}, bundleDefaults, options);
   var assetConfigFullPath = path.join(currentDirectory, config.assetConfigPath);
   
   var bundles = getBundles(assetConfigFullPath, config.bundlesForFile);
   var bundleTasks = Object.keys(bundles).map(function (bundleName) {
     if (bundleName.toLowerCase().endsWith('.css')) {
-      return styleHelpers.createBundle(bundleName, bundles[bundleName], config.outputPath, currentDirectory, catchErrors);
+      return styleHelpers.createBundle(bundleName, bundles[bundleName], config.outputPath, currentDirectory, watchMode);
     }
     
-    return scriptHelpers.createBundle(bundleName, bundles[bundleName], config.outputPath, currentDirectory, catchErrors);
+    return scriptHelpers.createBundle(bundleName, bundles[bundleName], config.outputPath, currentDirectory, watchMode);
   });
-  
-  return merge.apply(this, bundleTasks)
+  var allBundleTasks = merge.apply(this, bundleTasks)
     .pipe(rev.manifest({
       merge: true,
       cwd: ''
     }))
     .pipe(gulp.dest('./'));
+  
+  var webpackBundles = getWebpackBundles(assetConfigFullPath);
+  var webpackBundleTasks = config.bundlesForFile ? [] : Object.keys(webpackBundles).map(function (bundleName) {
+    return scriptHelpers.createWebpackBundle(bundleName, webpackBundles[bundleName], config.outputPath, watchMode);
+  });
+  
+  return merge.call(this, _.flatten([allBundleTasks, webpackBundleTasks]));
 }
 
 function watch(incrementalFilesToWatch, bundleOptions) {
@@ -70,6 +97,13 @@ function watch(incrementalFilesToWatch, bundleOptions) {
   gulp.watch(config.assetConfigPath, function() {
     bundle(config, true);
   });
+  
+  var assetConfigFullPath = path.join(currentDirectory, config.assetConfigPath);
+  var webpackBundles = getWebpackBundles(assetConfigFullPath);
+  
+  Object.keys(webpackBundles).forEach(function (bundleName) {
+    scriptHelpers.createWebpackBundle(bundleName, webpackBundles[bundleName], config.outputPath, true);
+  });
 }
 
 function arrayify(input) {
@@ -81,16 +115,35 @@ function arrayify(input) {
 }
 
 function lint(options) {
-  var config = Object.assign({}, bundleDefaults, options);
-  var scripts = arrayify(config.scripts).map(function(localScriptPath) {
-    return path.join(currentDirectory, localScriptPath);
-  });
+  function getScripts(scripts) {
+    return _.concat(
+      arrayify(scripts || []).map(function(localScriptPath) {
+        return path.join(currentDirectory, localScriptPath);
+      }),
+      ['!**/typings/**/*', '!**/node_modules/**/*']);
+  }
   
-  scriptHelpers.lint(scripts);
+  var config = Object.assign({}, bundleDefaults, options);
+  var javascripts = getScripts(config.scripts);
+  var typescripts = getScripts(config.typescripts);
+
+  return merge(
+    scriptHelpers.lintJavaScript(javascripts),
+    scriptHelpers.lintTypeScript(typescripts)
+  );
+}
+
+function test(options, callback) {
+  var config = _.merge({}, karmaDefaults, options);
+  config.frameworks = _.concat(karmaDefaults.frameworks, options.frameworks || []);
+
+  return scriptHelpers.runKarmaTests(config, callback);
 }
 
 module.exports = {
   lint: lint,
   bundle: bundle,
-  watch: watch
+  watch: watch,
+  test: test,
+  restoreTypings: scriptHelpers.restoreTypings
 };
