@@ -139,7 +139,7 @@ function runKarmaTests(config, callback) {
           }],
           config.webpack.loaders || []),
         noParse: [
-          /\/sinon\.js/,
+          /[\/\\]sinon\.js/,
         ]
       },
       resolve: {
