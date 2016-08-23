@@ -13,14 +13,16 @@ var currentDirectory = process.cwd();
 var bundleDefaults = {
   assetConfigPath: './asset-config.json',
   outputPath: './Content/bundles/',
-  bundlesForFile: null
+  bundlesForFile: null,
+  webpack: {}
 };
 var karmaDefaults = {
   frameworks: ['mocha', 'chai', 'sinon-chai'],
   watch: false,
   webpack: {
     loaders: [],
-    externals: {}
+    externals: {},
+    plugins: []
   }
 };
 
@@ -79,7 +81,7 @@ function bundle(options, watchMode) {
   
   var webpackBundles = getWebpackBundles(assetConfigFullPath);
   var webpackBundleTasks = config.bundlesForFile ? [] : Object.keys(webpackBundles).map(function (bundleName) {
-    return scriptHelpers.createWebpackBundle(bundleName, webpackBundles[bundleName], config.outputPath, watchMode);
+    return scriptHelpers.createWebpackBundle(bundleName, webpackBundles[bundleName], config.outputPath, watchMode, config.webpack[bundleName]);
   });
   
   return merge.call(this, _.flatten([allBundleTasks, webpackBundleTasks]));
@@ -102,7 +104,7 @@ function watch(incrementalFilesToWatch, bundleOptions) {
   var webpackBundles = getWebpackBundles(assetConfigFullPath);
   
   Object.keys(webpackBundles).forEach(function (bundleName) {
-    scriptHelpers.createWebpackBundle(bundleName, webpackBundles[bundleName], config.outputPath, true);
+    scriptHelpers.createWebpackBundle(bundleName, webpackBundles[bundleName], config.outputPath, true, config.webpack[bundleName]);
   });
 }
 

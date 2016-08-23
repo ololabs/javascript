@@ -50,27 +50,53 @@ function createBundle(bundleName, bundleFiles, outputPath, currentDirectory, wat
     .pipe(gulp.dest(outputPath));
 }
 
-function createWebpackBundle(bundleName, entryScriptPath, outputPath, watchMode) {
-  console.log('Creating webpack script bundle: ' + bundleName);
-  
+function createWebpackManifestWriter(bundleName, watchMode) {
+  return function(stats) {
+    if (!watchMode && stats.compilation.errors && stats.compilation.errors.length) {
+      console.error('Failed to generate webpack: ' + bundleName);
+      
+      stats.compilation.errors.forEach(function(error) {
+        console.error('in ' + error.file + ':');
+        console.error(error.message);
+      });
+      
+      throw new Error('Error generating webpack');
+    }
+    
+    // TODO: introduce a file lock here to avoid any concurrency issues (for now we just process these serially)
+    var manifestPath = path.join(process.cwd(), 'rev-manifest.json');
+    
+    var hashedFileName = Object.keys(stats.compilation.assets)
+      .filter(function(key) { return key.endsWith('.js'); })[0];
+      
+      var manifestContents = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')) : {};
+      manifestContents[bundleName] = hashedFileName;
+
+      fs.writeFileSync(manifestPath, JSON.stringify(manifestContents, null, '  '));
+  };
+}
+
+function createWebpackConfig(bundleName, entryScriptPath, watchMode, additionalWebpackConfig) {
+  var webpackConfig = additionalWebpackConfig || {};
   var baseName = bundleName.replace(/(.*)\..*$/, '$1');
-  
-  return gulp.src(entryScriptPath)
-    .pipe(gulpif(watchMode, plumber()))
-    .pipe(gulpWebpack({
-      devtool: 'source-map',
-      entry: { bundle: entryScriptPath },
-      exclude: {},
-      output: { filename: baseName + '-[chunkhash].js' },
-      watch: watchMode,
-      module: {
-        loaders: [{
-          test: /\.ts(x?)$/,
-          loaders: ['ts'],
-          exclude: /(node_modules)/
-        }]
-      },
-      plugins: _.without([
+  var loaders = _.concat([{
+    test: /\.ts(x?)$/,
+    loaders: ['ts'],
+    exclude: /(node_modules)/
+  }], webpackConfig.loaders || []);
+
+  return {
+    devtool: 'source-map',
+    entry: { bundle: entryScriptPath },
+    exclude: {},
+    output: { filename: baseName + '-[chunkhash].js' },
+    watch: watchMode,
+    module: {
+      loaders: loaders
+    },
+    externals: webpackConfig.externals,
+    plugins: _.chain(webpackConfig.plugins || [])
+      .concat([
         new WebpackMd5Hash(),
         new webpack.NoErrorsPlugin(),
         new webpack.DefinePlugin({
@@ -82,35 +108,25 @@ function createWebpackBundle(bundleName, entryScriptPath, outputPath, watchMode)
           compress: { warnings: false }
         }),
         function() {
-          this.plugin('done', function(stats) {
-            if (!watchMode && stats.compilation.errors && stats.compilation.errors.length) {
-              console.error('Failed to generate webpack: ' + bundleName);
-              
-              stats.compilation.errors.forEach(function(error) {
-                console.error('in ' + error.file + ':');
-                console.error(error.message);
-              });
-              
-              throw new Error('Error generating webpack');
-            }
-            
-            // TODO: introduce a file lock here to avoid any concurrency issues (for now we just process these serially)
-            var manifestPath = path.join(process.cwd(), 'rev-manifest.json');
-            
-            var hashedFileName = Object.keys(stats.compilation.assets)
-              .filter(function(key) { return key.endsWith('.js'); })[0];
-              
-              var manifestContents = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')) : {};
-              manifestContents[bundleName] = hashedFileName;
-
-              fs.writeFileSync(manifestPath, JSON.stringify(manifestContents, null, '  '));
-          });
+          this.plugin('done', createWebpackManifestWriter(bundleName, watchMode));
         }
-      ], undefined),
-      resolve: {
-        extensions: ['', '.webpack.js', '.web.js', '.ts', '.tsx', '.js', '.jsx']
-      }
-    }))
+      ])
+      .without(undefined)
+      .value(),
+    resolve: {
+      extensions: ['', '.webpack.js', '.web.js', '.ts', '.tsx', '.js', '.jsx']
+    }
+  };
+}
+
+function createWebpackBundle(bundleName, entryScriptPath, outputPath, watchMode, additionalWebpackConfig) {
+  console.log('Creating webpack script bundle: ' + bundleName);
+  
+  var webpackConfig = createWebpackConfig(bundleName, entryScriptPath, watchMode, additionalWebpackConfig);
+  
+  return gulp.src(entryScriptPath)
+    .pipe(gulpif(watchMode, plumber()))
+    .pipe(gulpWebpack(webpackConfig))
     .pipe(gulp.dest(outputPath));
 }
 
@@ -130,6 +146,7 @@ function runKarmaTests(config, callback) {
       '**/*.tsx': ['webpack']
     },
     webpack: {
+      plugins: config.webpack.plugins || [],
       module: {
         loaders: _.concat(
           [{
