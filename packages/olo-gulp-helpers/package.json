@@ -1,6 +1,6 @@
 {
   "name": "olo-gulp-helpers",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Helpers for Olo's gulp build pipeline",
   "main": "index.js",
   "scripts": {
@@ -11,16 +11,19 @@
     "url": "https://github.com/ololabs/javascript"
   },
   "dependencies": {
+    "a11y": "^0.4.1",
     "babel-preset-es2015": "6.13.2",
     "beautylog": "5.0.14",
     "chai": "3.5.0",
     "eslint-teamcity": "1.1.0",
     "gulp": "3.9.1",
+    "gulp-a11y": "^0.1.2",
     "gulp-babel": "6.1.2",
     "gulp-concat": "2.6.0",
     "gulp-eslint": "3.0.1",
     "gulp-if": "2.0.1",
     "gulp-plumber": "1.1.0",
+    "gulp-remote-src": "^0.4.1",
     "gulp-rev": "7.0.0",
     "gulp-sass": "2.2.0",
     "gulp-sourcemaps": "1.6.0",

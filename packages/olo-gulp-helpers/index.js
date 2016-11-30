@@ -8,6 +8,8 @@ var rev = require('gulp-rev');
 var _ = require('lodash');
 var scriptHelpers = require('./helpers/scripts');
 var styleHelpers = require('./helpers/styles');
+var a11y = require('gulp-a11y');
+var remoteSrc = require('gulp-remote-src');
 
 var currentDirectory = process.cwd();
 var bundleDefaults = {
@@ -58,6 +60,12 @@ function getWebpackBundles(assetConfigFullPath) {
       
     return bundles;
   }, {});
+}
+
+function audit(sources, options) {
+  return remoteSrc(sources, options)
+    .pipe(a11y())
+    .pipe(a11y.reporter());
 }
 
 function bundle(options, watchMode) {
@@ -144,6 +152,7 @@ function test(options, callback) {
 
 module.exports = {
   lint: lint,
+  audit: audit,
   bundle: bundle,
   watch: watch,
   test: test,
