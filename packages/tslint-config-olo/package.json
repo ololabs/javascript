@@ -1,6 +1,6 @@
 {
   "name": "tslint-config-olo",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Olo's TSLint configs",
   "main": "index.js",
   "scripts": {
@@ -27,5 +27,8 @@
   "devDependencies": {
     "eslint": "^2.5.1",
     "eslint-config-olo": "^0.1.1"
+  },
+  "peerDependencies": {
+    "typescript": "2"
   }
 }

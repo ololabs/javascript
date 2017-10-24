@@ -1,8 +1,8 @@
 language: node_js
 node_js:
-  - "5"
+  - "6"
 env:
   - PACKAGE_DIR=packages/eslint-config-olo
   - PACKAGE_DIR=packages/tslint-config-olo
   - PACKAGE_DIR=packages/olo-gulp-helpers
-script: cd $PACKAGE_DIR && npm install && npm run lint
+script: cd $PACKAGE_DIR && yarn && yarn run lint
