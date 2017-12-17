@@ -8,7 +8,6 @@ module.exports = {
     'new-parens': true,
     'no-angle-bracket-type-assertion': true,
     'no-consecutive-blank-lines': true,
-    'no-constructor-vars': true,
     'one-line': [true, 'check-catch', 'check-finally', 'check-else', 'check-open-brace', 'check-whitespace'],
     'one-variable-per-declaration': false,
     'quotemark': [true, 'single', 'jsx-double', 'avoid-escape'],
