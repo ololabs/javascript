@@ -23,7 +23,6 @@ module.exports = {
     'radix': true,
     'switch-default': true,
     'triple-equals': true,
-    'use-isnan': true,
-    'use-strict': true
+    'use-isnan': true
   }
 };
