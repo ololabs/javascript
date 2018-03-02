@@ -11,11 +11,11 @@ var plumber = require('gulp-plumber');
 
 function createBundle(bundleName, bundleFiles, outputPath, currentDirectory, catchErrors) {
   console.log('Creating style bundle: ' + bundleName);
-    
   return gulp.src(bundleFiles)
     .pipe(gulpif(catchErrors, plumber()))
     .pipe(sourcemaps.init())
     .pipe(sass({
+		includePaths: ['partials/'],
       outputStyle: 'compressed'
     }))
     .pipe(concat({ path: bundleName, cwd: currentDirectory }))
