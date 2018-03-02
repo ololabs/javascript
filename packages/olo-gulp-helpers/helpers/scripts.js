@@ -13,9 +13,8 @@ var babel = require('gulp-babel');
 var gulpif = require('gulp-if');
 var plumber = require('gulp-plumber');
 var teamcityESLintFormatter = require('eslint-teamcity');
-var gulpWebpack = require('gulp-webpack');
+var webpackStream = require('webpack-stream');
 var webpack = require('webpack');
-var typings = require('gulp-typings');
 var tslint = require('gulp-tslint');
 var _ = require('lodash');
 var WebpackMd5Hash = require('webpack-md5-hash');
@@ -81,14 +80,12 @@ function createWebpackConfig(bundleName, entryScriptPath, watchMode, additionalW
   var baseName = bundleName.replace(/(.*)\..*$/, '$1');
   var loaders = _.concat([{
     test: /\.ts(x?)$/,
-    loaders: ['ts'],
-    exclude: /(node_modules)/
+    loaders: ['ts-loader'],
   }], webpackConfig.loaders || []);
 
   return {
     devtool: 'source-map',
     entry: { bundle: entryScriptPath },
-    exclude: {},
     output: { filename: baseName + '-[chunkhash].js' },
     watch: watchMode,
     module: {
@@ -98,7 +95,7 @@ function createWebpackConfig(bundleName, entryScriptPath, watchMode, additionalW
     plugins: _.chain(webpackConfig.plugins || [])
       .concat([
         new WebpackMd5Hash(),
-        new webpack.NoErrorsPlugin(),
+        new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({
           'process.env': {
             'NODE_ENV': JSON.stringify(process.env.TEAMCITY_VERSION ? 'production' : 'development')
@@ -114,7 +111,7 @@ function createWebpackConfig(bundleName, entryScriptPath, watchMode, additionalW
       .without(undefined)
       .value(),
     resolve: {
-      extensions: ['', '.webpack.js', '.web.js', '.ts', '.tsx', '.js', '.jsx']
+      extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js', '.jsx']
     }
   };
 }
@@ -126,13 +123,8 @@ function createWebpackBundle(bundleName, entryScriptPath, outputPath, watchMode,
   
   return gulp.src(entryScriptPath)
     .pipe(gulpif(watchMode, plumber()))
-    .pipe(gulpWebpack(webpackConfig))
+    .pipe(webpackStream(webpackConfig))
     .pipe(gulp.dest(outputPath));
-}
-
-function restoreTypings(typingsPaths) {
-  return gulp.src(typingsPaths)
-    .pipe(typings());
 }
 
 function runKarmaTests(config, callback) {
@@ -140,7 +132,6 @@ function runKarmaTests(config, callback) {
     basePath: '',
     frameworks: config.frameworks,
     files: config.files,
-    exclude: [],
     preprocessors: {
       '**/*.ts': ['webpack'],
       '**/*.tsx': ['webpack']
@@ -148,19 +139,13 @@ function runKarmaTests(config, callback) {
     webpack: {
       plugins: config.webpack.plugins || [],
       module: {
-        loaders: _.concat(
-          [{
-            test: /\.ts(x?)$/,
-            loaders: ['ts'],
-            exclude: /(node_modules)/
-          }],
-          config.webpack.loaders || []),
+        loaders: config.webpack.loaders || [],
         noParse: [
           /[\/\\]sinon\.js/,
         ]
       },
       resolve: {
-        extensions: ['', '.webpack.js', '.web.js', '.ts', '.tsx', '.js', '.jsx'],
+        extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js', '.jsx'],
         alias: {
           sinon: 'sinon/pkg/sinon.js',
         }
@@ -185,6 +170,5 @@ module.exports = {
   lintTypeScript: lintTypeScript,
   createBundle: createBundle,
   createWebpackBundle: createWebpackBundle,
-  restoreTypings: restoreTypings,
   runKarmaTests: runKarmaTests
 };

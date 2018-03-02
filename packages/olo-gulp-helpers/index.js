@@ -146,6 +146,5 @@ module.exports = {
   lint: lint,
   bundle: bundle,
   watch: watch,
-  test: test,
-  restoreTypings: scriptHelpers.restoreTypings
+  test: test
 };
