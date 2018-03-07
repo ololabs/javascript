@@ -27,10 +27,11 @@ function lintJavaScript(scripts) {
     .pipe(eslint.failAfterError());
 }
 
-function lintTypeScript(scripts) {
+function lintTypeScript(scripts, projectRoot) {
   return gulp.src(scripts)
     .pipe(tslint({
-      formatter: process.env.TEAMCITY_VERSION ? 'tslint-teamcity-reporter' : undefined
+      formatter: process.env.TEAMCITY_VERSION ? 'tslint-teamcity-reporter' : undefined,
+      formattersDirectory: process.env.TEAMCITY_VERSION ? projectRoot + '/node_modules/tslint-teamcity-reporter/' : undefined
     }))
     .pipe(tslint.report());
 }

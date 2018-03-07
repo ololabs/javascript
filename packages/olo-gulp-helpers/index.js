@@ -131,7 +131,7 @@ function lint(options) {
 
   return merge(
     scriptHelpers.lintJavaScript(javascripts),
-    scriptHelpers.lintTypeScript(typescripts)
+    scriptHelpers.lintTypeScript(typescripts, currentDirectory)
   );
 }
 
