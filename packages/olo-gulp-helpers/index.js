@@ -89,10 +89,9 @@ function bundle(options, watchMode) {
 
 function watch(incrementalFilesToWatch, bundleOptions) {
   var config = Object.assign({}, bundleDefaults, bundleOptions);
-  
-  gulp.watch(incrementalFilesToWatch, function(e) {
+  gulp.watch(incrementalFilesToWatch).on('change', function(e) {
     bundle(Object.assign({}, config, {
-      bundlesForFile: e.path
+      bundlesForFile: e
     }), true);
   });
   
