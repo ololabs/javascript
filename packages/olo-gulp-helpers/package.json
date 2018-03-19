@@ -1,6 +1,6 @@
 {
   "name": "olo-gulp-helpers",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Helpers for Olo's gulp build pipeline",
   "main": "index.js",
   "scripts": {
