@@ -103,7 +103,8 @@ function createWebpackConfig(bundleName, entryScriptPath, watchMode, additionalW
           }
         }),
         process.env.TEAMCITY_VERSION && new webpack.optimize.UglifyJsPlugin({
-          compress: { warnings: false }
+          compress: { warnings: false },
+          sourceMap: true
         }),
         function() {
           this.plugin('done', createWebpackManifestWriter(bundleName, watchMode));

@@ -29,6 +29,6 @@
     "eslint-config-olo": "^0.1.1"
   },
   "peerDependencies": {
-    "typescript": "2"
+    "typescript": "2.7"
   }
 }
