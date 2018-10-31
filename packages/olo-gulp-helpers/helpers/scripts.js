@@ -1,93 +1,132 @@
-'use strict';
+"use strict";
 
-var fs = require('fs');
-var path = require('path');
-var process = require('process');
-var gulp = require('gulp');
-var eslint = require('gulp-eslint');
-var concat = require('gulp-concat');
-var sourcemaps = require('gulp-sourcemaps');
-var uglify = require('gulp-uglify');
-var rev = require('gulp-rev');
-var babel = require('gulp-babel');
-var gulpif = require('gulp-if');
-var plumber = require('gulp-plumber');
-var teamcityESLintFormatter = require('eslint-teamcity');
-var webpackStream = require('webpack-stream');
-var webpack = require('webpack');
-var tslint = require('gulp-tslint');
-var _ = require('lodash');
-var WebpackMd5Hash = require('webpack-md5-hash');
-var Server = require('karma').Server;
+const fs = require("fs");
+const path = require("path");
+const process = require("process");
+const gulp = require("gulp");
+const eslint = require("gulp-eslint");
+const concat = require("gulp-concat");
+const sourcemaps = require("gulp-sourcemaps");
+const uglify = require("gulp-uglify");
+const rev = require("gulp-rev");
+const babel = require("gulp-babel");
+const gulpif = require("gulp-if");
+const plumber = require("gulp-plumber");
+const teamcityESLintFormatter = require("eslint-teamcity");
+const webpackStream = require("webpack-stream");
+const webpack = require("webpack");
+const tslint = require("gulp-tslint");
+const _ = require("lodash");
+const WebpackMd5Hash = require("webpack-md5-hash");
+const Server = require("karma").Server;
 
 function lintJavaScript(scripts) {
-  return gulp.src(scripts)
+  return gulp
+    .src(scripts)
     .pipe(eslint())
-    .pipe(eslint.format(process.env.TEAMCITY_VERSION ? teamcityESLintFormatter : undefined))
+    .pipe(
+      eslint.format(
+        process.env.TEAMCITY_VERSION ? teamcityESLintFormatter : undefined
+      )
+    )
     .pipe(eslint.failAfterError());
 }
 
 function lintTypeScript(scripts, projectRoot) {
-  return gulp.src(scripts)
-    .pipe(tslint({
-      formatter: process.env.TEAMCITY_VERSION ? 'tslint-teamcity-reporter' : undefined,
-      formattersDirectory: process.env.TEAMCITY_VERSION ? projectRoot + '/node_modules/tslint-teamcity-reporter/' : undefined
-    }))
+  return gulp
+    .src(scripts)
+    .pipe(
+      tslint({
+        formatter: process.env.TEAMCITY_VERSION
+          ? "tslint-teamcity-reporter"
+          : undefined,
+        formattersDirectory: process.env.TEAMCITY_VERSION
+          ? projectRoot + "/node_modules/tslint-teamcity-reporter/"
+          : undefined
+      })
+    )
     .pipe(tslint.report());
 }
 
-function createBundle(bundleName, bundleFiles, outputPath, currentDirectory, watchMode) {
-  console.log('Creating script bundle: ' + bundleName);
-    
-  return gulp.src(bundleFiles)
+function createBundle(
+  bundleName,
+  bundleFiles,
+  outputPath,
+  currentDirectory,
+  watchMode
+) {
+  console.log("Creating script bundle: " + bundleName);
+
+  return gulp
+    .src(bundleFiles)
     .pipe(gulpif(watchMode, plumber()))
     .pipe(sourcemaps.init())
     .pipe(babel())
     .pipe(uglify())
     .pipe(concat({ path: bundleName, cwd: currentDirectory }))
     .pipe(rev())
-    .pipe(sourcemaps.write('.'))
+    .pipe(sourcemaps.write("."))
     .pipe(gulp.dest(outputPath));
 }
 
 function createWebpackManifestWriter(bundleName, watchMode) {
-  return function(stats) {
-    if (!watchMode && stats.compilation.errors && stats.compilation.errors.length) {
-      console.error('Failed to generate webpack: ' + bundleName);
-      
-      stats.compilation.errors.forEach(function(error) {
-        console.error('in ' + error.file + ':');
+  return stats => {
+    if (
+      !watchMode &&
+      stats.compilation.errors &&
+      stats.compilation.errors.length
+    ) {
+      console.error("Failed to generate webpack: " + bundleName);
+
+      stats.compilation.errors.forEach(error => {
+        console.error("in " + error.file + ":");
         console.error(error.message);
       });
-      
-      throw new Error('Error generating webpack');
-    }
-    
-    // TODO: introduce a file lock here to avoid any concurrency issues (for now we just process these serially)
-    var manifestPath = path.join(process.cwd(), 'rev-manifest.json');
-    
-    var hashedFileName = Object.keys(stats.compilation.assets)
-      .filter(function(key) { return key.endsWith('.js'); })[0];
-      
-      var manifestContents = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')) : {};
-      manifestContents[bundleName] = hashedFileName;
 
-      fs.writeFileSync(manifestPath, JSON.stringify(manifestContents, null, '  '));
+      throw new Error("Error generating webpack");
+    }
+
+    // TODO: introduce a file lock here to avoid any concurrency issues (for now we just process these serially)
+    const manifestPath = path.join(process.cwd(), "rev-manifest.json");
+
+    const hashedFileName = Object.keys(stats.compilation.assets).filter(key =>
+      key.endsWith(".js")
+    )[0];
+
+    const manifestContents = fs.existsSync(manifestPath)
+      ? JSON.parse(fs.readFileSync(manifestPath, "utf8"))
+      : {};
+    manifestContents[bundleName] = hashedFileName;
+
+    fs.writeFileSync(
+      manifestPath,
+      JSON.stringify(manifestContents, null, "  ")
+    );
   };
 }
 
-function createWebpackConfig(bundleName, entryScriptPath, watchMode, additionalWebpackConfig) {
-  var webpackConfig = additionalWebpackConfig || {};
-  var baseName = bundleName.replace(/(.*)\..*$/, '$1');
-  var loaders = _.concat([{
-    test: /\.ts(x?)$/,
-    loaders: ['ts-loader'],
-  }], webpackConfig.loaders || []);
+function createWebpackConfig(
+  bundleName,
+  entryScriptPath,
+  watchMode,
+  additionalWebpackConfig
+) {
+  const webpackConfig = additionalWebpackConfig || {};
+  const baseName = bundleName.replace(/(.*)\..*$/, "$1");
+  const loaders = _.concat(
+    [
+      {
+        test: /\.ts(x?)$/,
+        loaders: ["ts-loader"]
+      }
+    ],
+    webpackConfig.loaders || []
+  );
 
   return {
-    devtool: 'source-map',
+    devtool: "source-map",
     entry: { bundle: entryScriptPath },
-    output: { filename: baseName + '-[chunkhash].js' },
+    output: { filename: baseName + "-[chunkhash].js" },
     watch: watchMode,
     module: {
       loaders: loaders
@@ -98,73 +137,92 @@ function createWebpackConfig(bundleName, entryScriptPath, watchMode, additionalW
         new WebpackMd5Hash(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({
-          'process.env': {
-            'NODE_ENV': JSON.stringify(process.env.TEAMCITY_VERSION ? 'production' : 'development')
+          "process.env": {
+            NODE_ENV: JSON.stringify(
+              process.env.TEAMCITY_VERSION ? "production" : "development"
+            )
           }
         }),
-        process.env.TEAMCITY_VERSION && new webpack.optimize.UglifyJsPlugin({
-          compress: { warnings: false },
-          sourceMap: true
-        }),
+        process.env.TEAMCITY_VERSION &&
+          new webpack.optimize.UglifyJsPlugin({
+            compress: { warnings: false },
+            sourceMap: true
+          }),
         function() {
-          this.plugin('done', createWebpackManifestWriter(bundleName, watchMode));
+          this.plugin(
+            "done",
+            createWebpackManifestWriter(bundleName, watchMode)
+          );
         }
       ])
       .without(undefined)
       .value(),
     resolve: {
-      extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js', '.jsx']
+      extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js", ".jsx"]
     }
   };
 }
 
-function createWebpackBundle(bundleName, entryScriptPath, outputPath, watchMode, additionalWebpackConfig) {
-  console.log('Creating webpack script bundle: ' + bundleName);
-  
-  var webpackConfig = createWebpackConfig(bundleName, entryScriptPath, watchMode, additionalWebpackConfig);
-  
-  return gulp.src(entryScriptPath)
+function createWebpackBundle(
+  bundleName,
+  entryScriptPath,
+  outputPath,
+  watchMode,
+  additionalWebpackConfig
+) {
+  console.log("Creating webpack script bundle: " + bundleName);
+
+  const webpackConfig = createWebpackConfig(
+    bundleName,
+    entryScriptPath,
+    watchMode,
+    additionalWebpackConfig
+  );
+
+  return gulp
+    .src(entryScriptPath)
     .pipe(gulpif(watchMode, plumber()))
     .pipe(webpackStream(webpackConfig))
     .pipe(gulp.dest(outputPath));
 }
 
 function runKarmaTests(config, callback) {
-  new Server({
-    basePath: '',
-    frameworks: config.frameworks,
-    files: config.files,
-    preprocessors: {
-      '**/*.ts': ['webpack'],
-      '**/*.tsx': ['webpack']
-    },
-    webpack: {
-      plugins: config.webpack.plugins || [],
-      module: {
-        loaders: config.webpack.loaders || [],
-        noParse: [
-          /[\/\\]sinon\.js/,
-        ]
+  new Server(
+    {
+      basePath: "",
+      frameworks: config.frameworks,
+      files: config.files,
+      preprocessors: {
+        "**/*.ts": ["webpack"],
+        "**/*.tsx": ["webpack"]
       },
-      resolve: {
-        extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js', '.jsx'],
-        alias: {
-          sinon: 'sinon/pkg/sinon.js',
-        }
+      webpack: {
+        plugins: config.webpack.plugins || [],
+        module: {
+          loaders: config.webpack.loaders || [],
+          noParse: [/[\/\\]sinon\.js/]
+        },
+        resolve: {
+          extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js", ".jsx"],
+          alias: {
+            sinon: "sinon/pkg/sinon.js"
+          }
+        },
+        externals: config.webpack.externals
       },
-      externals: config.webpack.externals
+      reporters: [process.env.TEAMCITY_VERSION ? "teamcity" : "mocha"],
+      mochaReporter: {
+        output: "autowatch"
+      },
+      port: 9876,
+      colors: true,
+      autoWatch: true,
+      browsers: ["PhantomJS"],
+      concurrency: Infinity,
+      singleRun: !config.watch
     },
-    reporters: [process.env.TEAMCITY_VERSION ? 'teamcity' : 'mocha'],
-    mochaReporter: {
-      output: 'autowatch'
-    },
-    port: 9876,
-    colors: true,
-    autoWatch: true,
-    browsers: ['PhantomJS'],
-    concurrency: Infinity,
-    singleRun: !config.watch
-  }, callback).start();
+    callback
+  ).start();
 }
 
 module.exports = {
