@@ -1,23 +1,23 @@
-'use strict';
+"use strict";
 
-var path = require('path');
-var process = require('process');
-var merge = require('merge-stream');
-var gulp = require('gulp');
-var rev = require('gulp-rev');
-var _ = require('lodash');
-var scriptHelpers = require('./helpers/scripts');
-var styleHelpers = require('./helpers/styles');
+const path = require("path");
+const process = require("process");
+const merge = require("merge-stream");
+const gulp = require("gulp");
+const rev = require("gulp-rev");
+const _ = require("lodash");
+const scriptHelpers = require("./helpers/scripts");
+const styleHelpers = require("./helpers/styles");
 
-var currentDirectory = process.cwd();
-var bundleDefaults = {
-  assetConfigPath: './asset-config.json',
-  outputPath: './Content/bundles/',
+const currentDirectory = process.cwd();
+const BUNDLE_DEFAULTS = {
+  assetConfigPath: "./asset-config.json",
+  outputPath: "./Content/bundles/",
   bundlesForFile: null,
   webpack: {}
 };
-var karmaDefaults = {
-  frameworks: ['mocha', 'chai', 'sinon-chai'],
+const KARMA_DEFAULTS = {
+  frameworks: ["mocha", "chai", "sinon-chai"],
   watch: false,
   webpack: {
     loaders: [],
@@ -27,116 +27,156 @@ var karmaDefaults = {
 };
 
 function getBundles(assetConfigFullPath, bundlesForFile) {
-  var allBundles = require(assetConfigFullPath).bundles;
-  
-  return Object.keys(allBundles).filter(function (name) {
-    if (!bundlesForFile) {
-      return true;
-    }
-    
-    var bundleFiles = allBundles[name];
-    var relativePath = path.isAbsolute(bundlesForFile)
-                        ? path.relative('./', bundlesForFile)
-                        : bundlesForFile;
-                        
-    return bundleFiles.indexOf(relativePath) !== -1
-            || bundleFiles.indexOf(relativePath.replace(/\\/g, '/')) !== -1;
-  }).reduce(function (bundles, name) {
-    bundles[name] = allBundles[name];
-    
-    return bundles;
-  }, {});
+  const allBundles = require(assetConfigFullPath).bundles;
+
+  return Object.keys(allBundles)
+    .filter(name => {
+      if (!bundlesForFile) {
+        return true;
+      }
+
+      const bundleFiles = allBundles[name];
+      const relativePath = path.isAbsolute(bundlesForFile)
+        ? path.relative("./", bundlesForFile)
+        : bundlesForFile;
+
+      return (
+        bundleFiles.includes(relativePath) ||
+        bundleFiles.includes(relativePath.replace(/\\/g, "/"))
+      );
+    })
+    .reduce((bundles, name) => {
+      bundles[name] = allBundles[name];
+
+      return bundles;
+    }, {});
 }
 
 function getWebpackBundles(assetConfigFullPath) {
-  var allBundles = require(assetConfigFullPath).webpack || {};
-  
-  return Object.keys(allBundles).reduce(function (bundles, name) {
-    bundles[name] = allBundles[name].startsWith('./')
-      ? allBundles[name] 
-      : ('./' + allBundles[name]);
-      
+  const allBundles = require(assetConfigFullPath).webpack || {};
+
+  return Object.keys(allBundles).reduce((bundles, name) => {
+    bundles[name] = allBundles[name].startsWith("./")
+      ? allBundles[name]
+      : "./" + allBundles[name];
+
     return bundles;
   }, {});
 }
 
 function bundle(options, watchMode) {
-  var config = Object.assign({}, bundleDefaults, options);
-  var assetConfigFullPath = path.join(currentDirectory, config.assetConfigPath);
-  
-  var bundles = getBundles(assetConfigFullPath, config.bundlesForFile);
-  var bundleTasks = Object.keys(bundles).map(function (bundleName) {
-    if (bundleName.toLowerCase().endsWith('.css')) {
-      return styleHelpers.createBundle(bundleName, bundles[bundleName], config.outputPath, currentDirectory, watchMode);
-    }
-    
-    return scriptHelpers.createBundle(bundleName, bundles[bundleName], config.outputPath, currentDirectory, watchMode);
+  const config = Object.assign({}, BUNDLE_DEFAULTS, options);
+  const assetConfigFullPath = path.join(
+    currentDirectory,
+    config.assetConfigPath
+  );
+
+  const bundles = getBundles(assetConfigFullPath, config.bundlesForFile);
+  const bundleTasks = Object.keys(bundles).map(bundleName => {
+    const { createBundle } = bundleName.toLowerCase().endsWith(".css")
+      ? styleHelpers
+      : scriptHelpers;
+
+    return createBundle(
+      bundleName,
+      bundles[bundleName],
+      config.outputPath,
+      currentDirectory,
+      watchMode
+    );
   });
-  var allBundleTasks = merge.apply(this, bundleTasks)
-    .pipe(rev.manifest({
-      merge: true,
-      cwd: ''
-    }))
-    .pipe(gulp.dest('./'));
-  
-  var webpackBundles = getWebpackBundles(assetConfigFullPath);
-  var webpackBundleTasks = config.bundlesForFile ? [] : Object.keys(webpackBundles).map(function (bundleName) {
-    return scriptHelpers.createWebpackBundle(bundleName, webpackBundles[bundleName], config.outputPath, watchMode, config.webpack[bundleName]);
-  });
-  
+
+  const allBundleTasks = merge
+    .apply(this, bundleTasks)
+    .pipe(
+      rev.manifest({
+        merge: true,
+        cwd: ""
+      })
+    )
+    .pipe(gulp.dest("./"));
+
+  const webpackBundles = getWebpackBundles(assetConfigFullPath);
+  const webpackBundleTasks = config.bundlesForFile
+    ? []
+    : Object.keys(webpackBundles).map(bundleName =>
+        scriptHelpers.createWebpackBundle(
+          bundleName,
+          webpackBundles[bundleName],
+          config.outputPath,
+          watchMode,
+          config.webpack[bundleName]
+        )
+      );
+
   return merge.call(this, _.flatten([allBundleTasks, webpackBundleTasks]));
 }
 
 function watch(incrementalFilesToWatch, bundleOptions) {
-  var config = Object.assign({}, bundleDefaults, bundleOptions);
-  gulp.watch(incrementalFilesToWatch).on('change', function(e) {
-    bundle(Object.assign({}, config, {
-      bundlesForFile: e
-    }), true);
+  const config = Object.assign({}, BUNDLE_DEFAULTS, bundleOptions);
+  gulp.watch(incrementalFilesToWatch).on("change", e => {
+    bundle(Object.assign({}, config, { bundlesForFile: e }), true);
   });
-  
-  gulp.watch(config.assetConfigPath, function() {
+
+  gulp.watch(config.assetConfigPath, () => {
     bundle(config, true);
   });
-  
-  var assetConfigFullPath = path.join(currentDirectory, config.assetConfigPath);
-  var webpackBundles = getWebpackBundles(assetConfigFullPath);
-  
-  Object.keys(webpackBundles).forEach(function (bundleName) {
-    scriptHelpers.createWebpackBundle(bundleName, webpackBundles[bundleName], config.outputPath, true, config.webpack[bundleName]);
+
+  const assetConfigFullPath = path.join(
+    currentDirectory,
+    config.assetConfigPath
+  );
+  const webpackBundles = getWebpackBundles(assetConfigFullPath);
+
+  Object.keys(webpackBundles).forEach(bundleName => {
+    scriptHelpers.createWebpackBundle(
+      bundleName,
+      webpackBundles[bundleName],
+      config.outputPath,
+      true,
+      config.webpack[bundleName]
+    );
   });
 }
 
 function arrayify(input) {
-  if (Array.isArray(input)) {
-    return input;
-  }
-  
-  return [input];
+  return Array.isArray(input) ? input : [input];
 }
 
 function lint(options) {
-  function getScripts(scripts) {
-    return _.concat(
-      arrayify(scripts || []).map(function(localScriptPath) {
-        return path.join(currentDirectory, localScriptPath);
-      }),
-      ['!**/typings/**/*', '!**/node_modules/**/*']);
-  }
-  
-  var config = Object.assign({}, bundleDefaults, options);
-  var javascripts = getScripts(config.scripts);
-  var typescripts = getScripts(config.typescripts);
+  const getScripts = (scripts = []) =>
+    scripts.length > 0
+      ? _.concat(
+          arrayify(scripts).map(localScriptPath =>
+            path.join(currentDirectory, localScriptPath)
+          ),
+          ["!**/typings/**/*", "!**/node_modules/**/*"]
+        )
+      : [];
 
-  return merge(
-    scriptHelpers.lintJavaScript(javascripts),
-    scriptHelpers.lintTypeScript(typescripts, currentDirectory)
-  );
+  const config = Object.assign({}, BUNDLE_DEFAULTS, options);
+  const javascripts = getScripts(config.scripts);
+  const typescripts = getScripts(config.typescripts);
+
+  if (javascripts.length > 0 && typescripts.length > 0) {
+    return merge(
+      scriptHelpers.lintJavaScript(javascripts),
+      scriptHelpers.lintTypeScript(typescripts, currentDirectory)
+    );
+  } else if (javascripts.length > 0) {
+    return scriptHelpers.lintJavaScript(javascripts);
+  } else if (typescripts.length > 0) {
+    return scriptHelpers.lintTypeScript(typescripts, currentDirectory);
+  }
+
+  // composes nicely with other streaming APIs this way.
+  return Promise.resolve();
 }
 
 function test(options, callback) {
-  var config = _.merge({}, karmaDefaults, options);
-  config.frameworks = _.concat(karmaDefaults.frameworks, options.frameworks || []);
+  const config = _.merge({}, KARMA_DEFAULTS, options, {
+    frameworks: _.concat(KARMA_DEFAULTS.frameworks, options.frameworks || [])
+  });
 
   return scriptHelpers.runKarmaTests(config, callback);
 }
