@@ -123,10 +123,14 @@ function createWebpackConfig(
     webpackConfig.loaders || []
   );
 
+  const output = Object.assign({},
+    webpackConfig.output || {},
+    { filename: baseName + "-[chunkhash].js" });
+
   return {
     devtool: "source-map",
     entry: { bundle: entryScriptPath },
-    output: { filename: baseName + "-[chunkhash].js" },
+    output: output,
     watch: watchMode,
     module: {
       loaders: loaders
