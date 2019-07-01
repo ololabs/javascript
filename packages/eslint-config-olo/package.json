@@ -24,6 +24,6 @@
   },
   "homepage": "https://github.com/ololabs/javascript",
   "devDependencies": {
-    "eslint": "^2.5.1"
+    "eslint": "^4.18.2"
   }
 }
