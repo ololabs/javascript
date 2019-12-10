@@ -65,5 +65,9 @@
   "devDependencies": {
     "eslint": "^5.8.0",
     "eslint-config-olo": "^0.1.1"
+  },
+  "resolutions": {
+    "mem": "4.0.0",
+    "braces": "2.3.1"
   }
 }
