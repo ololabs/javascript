@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-olo",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Olo's ESLint configs",
   "main": "index.js",
   "scripts": {
