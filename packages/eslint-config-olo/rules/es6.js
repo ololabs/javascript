@@ -2,24 +2,26 @@ module.exports = {
   'env': {
     'es6': true
   },
-  'ecmaFeatures': {
-    'arrowFunctions': true,
-    'blockBindings': true,
-    'classes': true,
-    'defaultParams': true,
-    'destructuring': true,
-    'forOf': true,
-    'generators': false,
-    'modules': true,
-    'objectLiteralComputedProperties': true,
-    'objectLiteralDuplicateProperties': false,
-    'objectLiteralShorthandMethods': true,
-    'objectLiteralShorthandProperties': true,
-    'restParams': true,
-    'spread': true,
-    'superInFunctions': true,
-    'templateStrings': true,
-    'jsx': true
+  'parserOptions': {
+    'ecmaFeatures': {
+      'arrowFunctions': true,
+      'blockBindings': true,
+      'classes': true,
+      'defaultParams': true,
+      'destructuring': true,
+      'forOf': true,
+      'generators': false,
+      'modules': true,
+      'objectLiteralComputedProperties': true,
+      'objectLiteralDuplicateProperties': false,
+      'objectLiteralShorthandMethods': true,
+      'objectLiteralShorthandProperties': true,
+      'restParams': true,
+      'spread': true,
+      'superInFunctions': true,
+      'templateStrings': true,
+      'jsx': true
+    },
   },
   'rules': {
     // enforces no braces where they can be omitted

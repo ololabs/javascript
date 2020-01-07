@@ -2,8 +2,16 @@ module.exports = {
   'plugins': [
     'react'
   ],
-  'ecmaFeatures': {
-    'jsx': true
+  'parserOptions': {
+    'ecmaFeatures': {
+      'jsx': true
+    }
+  },
+  'settings': {
+    'react': {
+      'pragma': 'React',
+      'version': 'detect'
+    }
   },
   // View link below for react rules documentation
   // https://github.com/yannickcr/eslint-plugin-react#list-of-supported-rules
@@ -40,7 +48,7 @@ module.exports = {
     'react/jsx-max-props-per-line': [0, { 'maximum': 1 }],
     // Prevent usage of .bind() and arrow functions in JSX props
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-no-bind.md
-    'react/jsx-no-bind': 2,
+    'react/jsx-no-bind': [2, { 'allowArrowFunctions': true }],
     // Prevent duplicate props in JSX
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-no-duplicate-props.md
     'react/jsx-no-duplicate-props': [0, { 'ignoreCase': false }],
@@ -67,22 +75,29 @@ module.exports = {
     }],
     // Prevent React to be incorrectly marked as unused
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-uses-react.md
-    'react/jsx-uses-react': [2, { 'pragma': 'React' }],
+    'react/jsx-uses-react': 2,
     // Prevent variables used in JSX to be incorrectly marked as unused
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-uses-vars.md
     'react/jsx-uses-vars': 2,
+    // Prevent missing parentheses around multilines JSX
+    // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/wrap-multilines.md
+    'react/jsx-wrap-multilines': [2, {
+      declaration: 'parens',
+      assignment: 'parens',
+      return: 'parens'
+    }],
     // Prevent usage of dangerous JSX properties
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/no-danger.md
     'react/no-danger': 0,
     // Prevent usage of deprecated methods
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/no-deprecated.md
-    'react/no-deprecated': [1, { 'react': '0.14.0' }],
+    'react/no-deprecated': 1,
     // Prevent usage of setState in componentDidMount
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/no-did-mount-set-state.md
-    'react/no-did-mount-set-state': [2, 'allow-in-func'],
+    'react/no-did-mount-set-state': 2,
     // Prevent usage of setState in componentDidUpdate
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/no-did-update-set-state.md
-    'react/no-did-update-set-state': [2, 'allow-in-func'],
+    'react/no-did-update-set-state': 2,
     // Prevent direct mutation of this.state
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/no-direct-mutation-state.md
     'react/no-direct-mutation-state': 0,
@@ -127,13 +142,6 @@ module.exports = {
         '/^render.+$/',
         'render'
       ]
-    }],
-    // Prevent missing parentheses around multilines JSX
-    // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/wrap-multilines.md
-    'react/wrap-multilines': [2, {
-      declaration: true,
-      assignment: true,
-      return: true
     }],
   }
 };
