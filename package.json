@@ -1,0 +1,12 @@
+{
+  "name": "olo-javascript",
+  "version": "1.0.0",
+  "description": "Repo of JS Helper Packages",
+  "repository": "https://github.com/ololabs/javascript.git",
+  "author": "",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "lerna": "^3.20.2"
+  }
+}
