@@ -18,7 +18,7 @@
     "chai-enzyme": "1.0.0-beta.1",
     "eslint-teamcity": "2.0.0",
     "gulp": "4.0.0",
-    "gulp-babel": "7.0.0",
+    "gulp-babel": "7",
     "gulp-concat": "2.6.1",
     "gulp-eslint": "4.0.2",
     "gulp-if": "2.0.2",
@@ -36,7 +36,7 @@
     "karma-phantomjs-launcher": "1.0.4",
     "karma-sinon-chai": "2.0.2",
     "karma-teamcity-reporter": "1.0.1",
-    "karma-typescript-preprocessor2": "1.2.1",
+    "karma-typescript-preprocessor2-without-gulp-utils": "2.0.0",
     "karma-webpack": "3.0.5",
     "lodash.concat": "4.5.0",
     "lodash.flatten": "4.4.0",
@@ -52,7 +52,7 @@
     "typescript": "2.7",
     "webpack": "3.10.0",
     "webpack-md5-hash": "0.0.5",
-    "webpack-stream": "4.0.0"
+    "webpack-stream": "4"
   },
   "keywords": [
     "olo",
