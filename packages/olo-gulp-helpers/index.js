@@ -5,7 +5,9 @@ const process = require("process");
 const merge = require("merge-stream");
 const gulp = require("gulp");
 const rev = require("gulp-rev");
-const _ = require("lodash");
+const lodashFlatten = require("lodash.flatten");
+const lodashConcat = require("lodash.concat");
+const lodashMerge = require("lodash.merge");
 const scriptHelpers = require("./helpers/scripts");
 const styleHelpers = require("./helpers/styles");
 
@@ -109,7 +111,7 @@ function bundle(options, watchMode) {
         )
       );
 
-  return merge.call(this, _.flatten([allBundleTasks, webpackBundleTasks]));
+  return merge.call(this, lodashFlatten([allBundleTasks, webpackBundleTasks]));
 }
 
 function watch(incrementalFilesToWatch, bundleOptions) {
@@ -146,7 +148,7 @@ function arrayify(input) {
 function lint(options) {
   const getScripts = (scripts = []) =>
     scripts.length > 0
-      ? _.concat(
+      ? lodashConcat(
           arrayify(scripts).map(localScriptPath =>
             path.join(currentDirectory, localScriptPath)
           ),
@@ -174,8 +176,8 @@ function lint(options) {
 }
 
 function test(options, callback) {
-  const config = _.merge({}, KARMA_DEFAULTS, options, {
-    frameworks: _.concat(KARMA_DEFAULTS.frameworks, options.frameworks || [])
+  const config = lodashMerge({}, KARMA_DEFAULTS, options, {
+    frameworks: lodashConcat(KARMA_DEFAULTS.frameworks, options.frameworks || [])
   });
 
   return scriptHelpers.runKarmaTests(config, callback);
