@@ -16,7 +16,7 @@ const teamcityESLintFormatter = require("eslint-teamcity");
 const webpackStream = require("webpack-stream");
 const webpack = require("webpack");
 const tslint = require("gulp-tslint");
-const _ = require("lodash");
+const lodashConcat = require("lodash.concat");
 const WebpackMd5Hash = require("webpack-md5-hash");
 const Server = require("karma").Server;
 
@@ -115,7 +115,7 @@ function createWebpackConfig(
 ) {
   const webpackConfig = additionalWebpackConfig || {};
   const baseName = bundleName.replace(/(.*)\..*$/, "$1");
-  const loaders = _.concat(
+  const loaders = lodashConcat(
     [
       {
         test: /\.ts(x?)$/,
@@ -138,8 +138,8 @@ function createWebpackConfig(
       loaders: loaders
     },
     externals: webpackConfig.externals,
-    plugins: _.chain(webpackConfig.plugins || [])
-      .concat([
+    plugins: lodashConcat(webpackConfig.plugins || [],
+      [
         new WebpackMd5Hash(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({
@@ -160,9 +160,7 @@ function createWebpackConfig(
             createWebpackManifestWriter(bundleName, watchMode)
           );
         }
-      ])
-      .without(undefined)
-      .value(),
+      ]).filter(Boolean),
     resolve: {
       extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js", ".jsx"]
     }
