@@ -8,5 +8,6 @@
     "version": {
       "allowBranch": "master"
     }
-  }
+  },
+  "useWorkspaces": true
 }

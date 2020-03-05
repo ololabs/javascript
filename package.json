@@ -8,5 +8,12 @@
   "private": true,
   "devDependencies": {
     "lerna": "^3.20.2"
-  }
+  },
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "test": "lerna run test"
+  },
+  "workspaces": [
+    "packages/olo-gulp-helpers"
+  ]
 }
