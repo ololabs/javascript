@@ -14,6 +14,7 @@
     "test": "lerna run test"
   },
   "workspaces": [
-    "packages/olo-gulp-helpers"
+    "packages/olo-gulp-helpers",
+    "tests/sample-webapp"
   ]
 }

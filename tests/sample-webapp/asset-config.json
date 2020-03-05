@@ -1,0 +1,7 @@
+{
+  "bundles": {
+    "main.js": [
+      "src/app.js"
+    ]
+  }
+}

@@ -1,7 +1,8 @@
 {
   "npmClient": "yarn",
   "packages": [
-    "packages/*"
+    "packages/*",
+    "tests/*"
   ],
   "version": "independent",
   "command": {

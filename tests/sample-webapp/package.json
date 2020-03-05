@@ -1,0 +1,14 @@
+{
+  "name": "sample-webapp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "gulp bundle && mocha tests/**/*.js"
+  },
+  "devDependencies": {
+    "mocha": "^7.1.0",
+    "gulp": "^4.0.2",
+    "olo-gulp-helpers": "*"
+  }
+}
