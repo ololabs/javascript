@@ -87,3 +87,26 @@ describe('styles', () => {
         );
     });
 });
+
+describe('babel', () => {
+    it('parses included files', () => {
+        const manifest = require('../rev-manifest.json');
+        const mainBundle = manifest['babel-included.js'];
+        const builtBundle = fs.readFileSync(
+            path.resolve(builtPath, mainBundle),
+            'UTF8'
+        );
+        assert.ok(builtBundle.includes(`"use strict"`), builtBundle);
+        assert.ok(builtBundle.includes(`var foo=function(){};`), builtBundle);
+    });
+    it('skips excluded files', () => {
+        const manifest = require('../rev-manifest.json');
+        const mainBundle = manifest['babel-excluded.js'];
+        const builtBundle = fs.readFileSync(
+            path.resolve(builtPath, mainBundle),
+            'UTF8'
+        );
+        assert.equal(builtBundle.includes(`"use strict"`), false, builtBundle);
+        assert.ok(builtBundle.includes(`var foo=function(){};`), builtBundle);
+    });
+});
