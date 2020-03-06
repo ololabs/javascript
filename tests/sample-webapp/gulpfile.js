@@ -7,24 +7,23 @@ var buildHelpers = require('olo-gulp-helpers');
 
 var allScriptsPaths = './src/*.js';
 
-
-gulp.task('lint:scripts', function () {
-  return buildHelpers.lint({
-    scripts: [allScriptsPaths]
-  });
+gulp.task('lint:scripts', function() {
+    return buildHelpers.lint({
+        scripts: [allScriptsPaths]
+    });
 });
 
-gulp.task('bundle', function () {
-  return buildHelpers.bundle();
+gulp.task('bundle', function() {
+    return buildHelpers.bundle();
 });
 
-gulp.task('bundle:watch', function () {
-  buildHelpers.watch([allScriptsPaths]);
+gulp.task('bundle:watch', function() {
+    buildHelpers.watch([allScriptsPaths]);
 });
 
 gulp.task('lint:scripts', function() {
-  return buildHelpers.lint({
-    scripts: allScriptsPaths,
-    typescripts: [],
-  });
+    return buildHelpers.lint({
+        scripts: allScriptsPaths,
+        typescripts: []
+    });
 });

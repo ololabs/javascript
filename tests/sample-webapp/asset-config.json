@@ -1,11 +1,9 @@
 {
-  "bundles": {
-    "main.js": [
-      "src/gulp-app.js"
-    ]
-  },
-  "webpack": {
-    "webpack-app.js": "src/webpack-app.js",
-    "typescript-app.js": "src/typescript-app.ts"
-  }
+    "bundles": {
+        "main.js": ["src/gulp-app.js"]
+    },
+    "webpack": {
+        "webpack-app.js": "src/webpack-app.js",
+        "typescript-app.js": "src/typescript-app.ts"
+    }
 }

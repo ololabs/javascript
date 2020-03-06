@@ -1,5 +1,5 @@
 function someFunction() {
-    return 'it works!'
+    return 'it works!';
 }
 
 if (typeof testResult !== 'undefined') {
