@@ -70,3 +70,20 @@ describe('typescript', () => {
         assert.equal(context.testResult, 'is object result: true');
     });
 });
+
+describe('styles', () => {
+    it('parses sass files', () => {
+        const manifest = require('../rev-manifest.json');
+        const mainBundle = manifest['main.css'];
+        assert.ok(mainBundle);
+        const builtBundle = fs.readFileSync(
+            path.resolve(builtPath, mainBundle),
+            'UTF8'
+        );
+        assert.ok(
+            builtBundle.includes(
+                `body{font-family:'Courier New', Courier, monospace;color:rebeccapurple}`
+            )
+        );
+    });
+});
