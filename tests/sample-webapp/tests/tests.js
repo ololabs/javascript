@@ -32,19 +32,8 @@ describe('manifest', () => {
 });
 
 describe('webpack', () => {
-    const manifest = require('../rev-manifest.json');
-    it('parses', () => {
-        assert.ok(manifest);
-        const mainBundle = manifest["webpack-app.js"];
-        assert.ok(mainBundle);
-        assert.ok(mainBundle.match(/webpack-app-[\w]+\.js/i), mainBundle, 'name does not match');
-    });
-    it('maps to real file', () => {
-        const mainBundle = manifest["webpack-app.js"];
-        const builtBundle = fs.readFileSync(path.resolve(builtPath, mainBundle), 'UTF8');
-        assert.ok(builtBundle);
-    });
     it('evaluates built javascript', () => {
+        const manifest = require('../rev-manifest.json');
         const mainBundle = manifest["webpack-app.js"];
         const builtBundle = fs.readFileSync(path.resolve(builtPath, mainBundle), 'UTF8');
         const context = {
@@ -54,4 +43,20 @@ describe('webpack', () => {
 
         assert.equal(context.testResult, 'is object result: true');
     })
-})
+});
+
+
+describe('typescript', () => {
+    it('evaluates built javascript', () => {
+        const manifest = require('../rev-manifest.json');
+        const mainBundle = manifest["typescript-app.js"];
+        assert.ok(mainBundle);
+        const builtBundle = fs.readFileSync(path.resolve(builtPath, mainBundle), 'UTF8');
+        const context = {
+            testResult: ''
+        };
+        vm.runInContext(builtBundle, vm.createContext(context));
+
+        assert.equal(context.testResult, 'is object result: true');
+    })
+});
