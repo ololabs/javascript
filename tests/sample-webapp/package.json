@@ -7,8 +7,9 @@
     "test": "gulp bundle && mocha tests/**/*.js"
   },
   "devDependencies": {
-    "mocha": "^7.1.0",
     "gulp": "^4.0.2",
+    "is-object": "^1.0.1",
+    "mocha": "^7.1.0",
     "olo-gulp-helpers": "*"
   }
 }

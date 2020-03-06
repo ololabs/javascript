@@ -1,7 +1,10 @@
 {
   "bundles": {
     "main.js": [
-      "src/app.js"
+      "src/gulp-app.js"
     ]
+  },
+  "webpack": {
+    "webpack-app.js": "src/webpack-app.js"
   }
 }
