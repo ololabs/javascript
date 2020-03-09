@@ -1,0 +1,19 @@
+{
+  "name": "sample-webapp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "rimraf Content/bundles && rimraf rev-manifest.json && gulp bundle && mocha tests/**/*.js"
+  },
+  "devDependencies": {
+    "@types/node": "^13.7.7",
+    "babel-plugin-transform-es2015-arrow-functions": "^6.22.0",
+    "gulp": "^4.0.2",
+    "is-object": "^1.0.1",
+    "mocha": "^7.1.0",
+    "olo-gulp-helpers": "*",
+    "rimraf": "^3.0.2",
+    "typescript": "^3.8.3"
+  }
+}

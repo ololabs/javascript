@@ -1,0 +1,12 @@
+{
+    "bundles": {
+        "babel-included.js": ["src/babel-included.js"],
+        "babel-excluded.js": ["src/babel-excluded.js"],
+        "main.js": ["src/gulp-app.js"],
+        "main.css": ["src/app.scss"]
+    },
+    "webpack": {
+        "webpack-app.js": "src/webpack-app.js",
+        "typescript-app.js": "src/typescript-app.ts"
+    }
+}
