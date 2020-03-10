@@ -61,9 +61,7 @@ function createBundle(
     .src(bundleFiles)
     .pipe(gulpif(watchMode, plumber()))
     .pipe(sourcemaps.init())
-    .pipe(babel({
-      presets: ["es2015"] // ensure that uglify does not choke on potential es6 code
-    }))
+    .pipe(babel())
     .pipe(uglify())
     .pipe(concat({ path: bundleName, cwd: currentDirectory }))
     .pipe(rev())
