@@ -63,6 +63,7 @@
   },
   "homepage": "https://github.com/ololabs/javascript",
   "devDependencies": {
+    "cross-env": "7.0.2",
     "eslint": "^5.8.0",
     "eslint-config-olo": "^0.1.1"
   },
