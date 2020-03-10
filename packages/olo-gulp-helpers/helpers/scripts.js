@@ -7,7 +7,7 @@ const gulp = require("gulp");
 const eslint = require("gulp-eslint");
 const concat = require("gulp-concat");
 const sourcemaps = require("gulp-sourcemaps");
-const uglify = require("gulp-uglify");
+const terser = require("gulp-terser");
 const rev = require("gulp-rev");
 const babel = require("gulp-babel");
 const gulpif = require("gulp-if");
@@ -62,7 +62,7 @@ function createBundle(
     .pipe(gulpif(watchMode, plumber()))
     .pipe(sourcemaps.init())
     .pipe(babel())
-    .pipe(uglify())
+    .pipe(terser())
     .pipe(concat({ path: bundleName, cwd: currentDirectory }))
     .pipe(rev())
     .pipe(sourcemaps.write("."))
