@@ -2,5 +2,5 @@
     "ignore": [
         "src/babel-excluded.js"
     ],
-    "presets": ["es2015"]
+    "presets": ["@babel/preset-env"]
 }
