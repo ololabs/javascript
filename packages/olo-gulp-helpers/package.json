@@ -11,14 +11,14 @@
     "url": "https://github.com/ololabs/javascript"
   },
   "dependencies": {
-    "babel-core": "^6.26.3",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-es2015": "6.13.2",
+    "@babel/core": "7.8.7",
+    "@babel/polyfill": "7.8.7",
+    "@babel/preset-env": "7.8.7",
     "chai": "4.0.0",
     "chai-enzyme": "1.0.0-beta.1",
     "eslint-teamcity": "2.0.0",
     "gulp": "4.0.0",
-    "gulp-babel": "7",
+    "gulp-babel": "8.0.0",
     "gulp-concat": "2.6.1",
     "gulp-eslint": "4.0.2",
     "gulp-if": "2.0.2",
