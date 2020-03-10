@@ -1,7 +1,6 @@
 {
     "ignore": [
         "src/babel-excluded.js"
-    ], 
-    "plugins": ["transform-es2015-arrow-functions"],
-
+    ],
+    "presets": ["es2015"]
 }
