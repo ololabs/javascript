@@ -1,1 +1,1 @@
-var foo = function() { return undefined; }
+const foo = () => undefined;

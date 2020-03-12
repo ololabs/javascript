@@ -7,7 +7,7 @@ const gulp = require("gulp");
 const eslint = require("gulp-eslint");
 const concat = require("gulp-concat");
 const sourcemaps = require("gulp-sourcemaps");
-const uglify = require("gulp-uglify");
+const terser = require("gulp-terser");
 const rev = require("gulp-rev");
 const babel = require("gulp-babel");
 const gulpif = require("gulp-if");
@@ -17,7 +17,6 @@ const webpackStream = require("webpack-stream");
 const webpack = require("webpack");
 const tslint = require("gulp-tslint");
 const lodashConcat = require("lodash.concat");
-const WebpackMd5Hash = require("webpack-md5-hash");
 const Server = require("karma").Server;
 
 function lintJavaScript(scripts) {
@@ -62,7 +61,7 @@ function createBundle(
     .pipe(gulpif(watchMode, plumber()))
     .pipe(sourcemaps.init())
     .pipe(babel())
-    .pipe(uglify())
+    .pipe(terser())
     .pipe(concat({ path: bundleName, cwd: currentDirectory }))
     .pipe(rev())
     .pipe(sourcemaps.write("."))
@@ -125,7 +124,7 @@ function createWebpackConfig(
 
   const output = Object.assign({},
     webpackConfig.output || {},
-    { filename: baseName + "-[chunkhash].js" });
+    { filename: baseName + "-[contenthash].js" });
 
   return {
     devtool: "source-map",
@@ -133,12 +132,12 @@ function createWebpackConfig(
     output: output,
     watch: watchMode,
     module: {
-      loaders: loaders
+      rules: loaders
     },
     externals: webpackConfig.externals,
+    mode: process.env.TEAMCITY_VERSION ? "production" : "development",
     plugins: lodashConcat(webpackConfig.plugins || [],
       [
-        new WebpackMd5Hash(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({
           "process.env": {
@@ -147,11 +146,6 @@ function createWebpackConfig(
             )
           }
         }),
-        process.env.TEAMCITY_VERSION &&
-          new webpack.optimize.UglifyJsPlugin({
-            compress: { warnings: false },
-            sourceMap: true
-          }),
         function() {
           this.plugin(
             "done",

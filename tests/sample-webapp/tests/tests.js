@@ -88,7 +88,7 @@ describe('styles', () => {
     });
 });
 
-describe('babel', () => {
+describe('scripts', () => {
     it('parses included files', () => {
         const manifest = require('../rev-manifest.json');
         const mainBundle = manifest['babel-included.js'];
@@ -107,6 +107,6 @@ describe('babel', () => {
             'UTF8'
         );
         assert.equal(builtBundle.includes(`"use strict"`), false, builtBundle);
-        assert.ok(builtBundle.includes(`var foo=function(){};`), builtBundle);
+        assert.ok(builtBundle.includes(`const foo=()=>{};`), builtBundle);
     });
 });
