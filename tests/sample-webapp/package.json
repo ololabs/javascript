@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "main": "index.js",
   "license": "MIT",
+  "private": true,
   "scripts": {
     "clean": "rimraf Content/bundles && rimraf rev-manifest.json",
     "test:dev": "gulp bundle && mocha tests/**/*.js",
