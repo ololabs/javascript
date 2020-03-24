@@ -28,6 +28,13 @@ jobs:
       - name: Setup publish token
         run: cp publish.npmrc .npmrc
 
+      - name: Unpublish sample-webapp 😵
+        run: npm unpublish sample-webapp
+        continue-on-error: true
+        env:
+          CI: true
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Run Lerna publish
         run: yarn lerna publish from-package --yes
         env:
