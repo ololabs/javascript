@@ -25,6 +25,9 @@ jobs:
       - name: Install Dependencies
         run: yarn
 
+      - name: Setup publish token
+        run: cp publish.npmrc .npmrc
+
       - name: Run Lerna release
         run: yarn lerna release from-git
         env:

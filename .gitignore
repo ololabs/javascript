@@ -34,3 +34,4 @@ node_modules
 
 **/bundles/*
 **/rev-manifest.json
+.npmrc
