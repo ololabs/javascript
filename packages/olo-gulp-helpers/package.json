@@ -31,7 +31,6 @@
     "lodash.flatten": "4.4.0",
     "lodash.merge": "4.6.2",
     "merge-stream": "1.0.1",
-    "mocha": "5.2.0",
     "ts-loader": "6.2.1",
     "tslint": "5.9.1",
     "tslint-teamcity-reporter": "2.0.0",
