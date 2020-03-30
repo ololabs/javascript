@@ -17,7 +17,6 @@ const webpackStream = require("webpack-stream");
 const webpack = require("webpack");
 const tslint = require("gulp-tslint");
 const lodashConcat = require("lodash.concat");
-const Server = require("karma").Server;
 
 function lintJavaScript(scripts) {
   return gulp
