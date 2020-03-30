@@ -182,43 +182,8 @@ function createWebpackBundle(
     .pipe(gulp.dest(outputPath));
 }
 
-function runKarmaTests(config, callback) {
-  new Server(
-    {
-      basePath: "",
-      frameworks: config.frameworks,
-      files: config.files,
-      preprocessors: {
-        "**/*.ts": ["webpack"],
-        "**/*.tsx": ["webpack"]
-      },
-      webpack: {
-        plugins: config.webpack.plugins || [],
-        module: {
-          loaders: config.webpack.loaders || [],
-          noParse: [/[\/\\]sinon\.js/]
-        },
-        resolve: {
-          extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js", ".jsx"],
-          alias: {
-            sinon: "sinon/pkg/sinon.js"
-          }
-        },
-        externals: config.webpack.externals
-      },
-      reporters: [process.env.TEAMCITY_VERSION ? "teamcity" : "mocha"],
-      mochaReporter: {
-        output: "autowatch"
-      },
-      port: 9876,
-      colors: true,
-      autoWatch: true,
-      browsers: ["PhantomJS"],
-      concurrency: Infinity,
-      singleRun: !config.watch
-    },
-    callback
-  ).start();
+function runKarmaTests() {
+  throw new Error('Testing is no longer supported directly by olo-gulp-helpers, please install test scripts in your project directly');
 }
 
 module.exports = {
