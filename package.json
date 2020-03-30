@@ -16,5 +16,8 @@
   "workspaces": [
     "packages/olo-gulp-helpers",
     "tests/sample-webapp"
-  ]
+  ],
+  "resolutions": {
+    "minimist": "1.2.5"
+  }
 }
