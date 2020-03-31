@@ -1,6 +1,6 @@
 {
   "name": "sample-webapp",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "index.js",
   "license": "MIT",
   "private": true,
@@ -15,7 +15,7 @@
     "gulp": "^4.0.2",
     "is-object": "^1.0.1",
     "mocha": "^7.1.0",
-    "olo-gulp-helpers": "^0.6.2",
+    "olo-gulp-helpers": "^0.7.0",
     "rimraf": "^3.0.2",
     "typescript": "^3.8.3"
   }
