@@ -7,7 +7,6 @@ const gulp = require("gulp");
 const rev = require("gulp-rev");
 const lodashFlatten = require("lodash.flatten");
 const lodashConcat = require("lodash.concat");
-const lodashMerge = require("lodash.merge");
 const scriptHelpers = require("./helpers/scripts");
 const styleHelpers = require("./helpers/styles");
 
@@ -17,15 +16,6 @@ const BUNDLE_DEFAULTS = {
   outputPath: "./Content/bundles/",
   bundlesForFile: null,
   webpack: {}
-};
-const KARMA_DEFAULTS = {
-  frameworks: ["mocha", "chai", "sinon-chai"],
-  watch: false,
-  webpack: {
-    loaders: [],
-    externals: {},
-    plugins: []
-  }
 };
 
 function getBundles(assetConfigFullPath, bundlesForFile) {
@@ -175,12 +165,8 @@ function lint(options) {
   return Promise.resolve();
 }
 
-function test(options, callback) {
-  const config = lodashMerge({}, KARMA_DEFAULTS, options, {
-    frameworks: lodashConcat(KARMA_DEFAULTS.frameworks, options.frameworks || [])
-  });
-
-  return scriptHelpers.runKarmaTests(config, callback);
+function test() {
+  throw new Error('Testing is no longer supported directly by olo-gulp-helpers, please install test scripts in your project directly');
 }
 
 module.exports = {
