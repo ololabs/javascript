@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "module": "esnext",
+    "lib": ["es2015", "es2017"],
+    "noUnusedLocals": true,
+    "pretty": true,
+    "outDir": "dist",
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "strict": true
+  },
+  "exclude": ["node_modules", "coverage"],
+  "compileOnSave": false
+}
