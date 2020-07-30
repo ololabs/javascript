@@ -15,7 +15,8 @@
   },
   "workspaces": [
     "packages/olo-gulp-helpers",
-    "tests/sample-webapp"
+    "tests/sample-webapp",
+    "packages/data-generator"
   ],
   "resolutions": {
     "minimist": "1.2.5"

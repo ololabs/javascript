@@ -1,0 +1,68 @@
+{
+  "name": "olo-data-generator",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "license": "MIT",
+  "private": true,
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "rimraf dist && webpack",
+    "build:watch": "webpack --watch",
+    "lint:fix": "prettier --write \"**/*.{ts,js,json,md}\" && eslint --fix --ext .ts -c .eslintrc.js .",
+    "lint": "prettier --check \"**/*.{ts,js,json,md}\" && eslint --ext .ts -c .eslintrc.js .",
+    "test": "jest && npm run lint",
+    "test:bundle": "jest",
+    "test:coverage": "jest --coverageReporters=html",
+    "test:debug": "node --inspect-brk ../../node_modules/jest-cli/bin/jest.js test --runInBand --no-cache"
+  },
+  "dependencies": {
+    "chance": "^1.1.4",
+    "husky": "^4.2.5",
+    "jest": "^25.5.4",
+    "lint-staged": "^10.2.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-typescript": "^7.9.0",
+    "@types/chance": "^1.1.0",
+    "@types/jest": "^26.0.7",
+    "@typescript-eslint/eslint-plugin": "^3.7.1",
+    "@typescript-eslint/parser": "^3.7.1",
+    "@typescript-eslint/typescript-estree": "^3.7.1",
+    "babel-jest": "^25.5.1",
+    "babel-loader": "^8.1.0",
+    "eslint": "^7.0.0",
+    "eslint-config-olo": "^0.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-import-resolver-webpack": "^0.12.1",
+    "eslint-loader": "^4.0.2",
+    "eslint-plugin-import": "^2.20.2",
+    "jest-teamcity-reporter": "^0.9.0",
+    "mini-css-extract-plugin": "^0.9.0",
+    "prettier": "^2.0.5",
+    "ts-loader": "^8.0.1",
+    "typescript": "^3.9.7",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**/*.{ts,js,json,md}": [
+      "prettier --write",
+      "git add"
+    ],
+    "**/*.{ts,tsx}": [
+      "eslint --fix -c .eslintrc.js",
+      "git add"
+    ]
+  },
+  "typings": "dist/index.d.ts"
+}
