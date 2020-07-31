@@ -17,7 +17,6 @@ jobs:
     strategy:
       matrix:
         node-version: [10.x, 12.x]
-        package: [data-generator, eslint-config-olo, olo-gulp-helpers, tslint-config-olo]
 
     steps:
     - uses: actions/checkout@v2
@@ -34,5 +33,4 @@ jobs:
     - name: Create Package
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.package }}
-        path: packages/${{ matrix.package }}
+        path: packages/**/*.tgz
