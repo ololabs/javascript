@@ -11,7 +11,10 @@
   },
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "test": "lerna run test"
+    "build": "lerna run build",
+    "lint": "lerna run lint",
+    "pack": "lerna run pack",
+    "test": "lerna run test:bundle --stream"
   },
   "workspaces": [
     "packages/olo-gulp-helpers",
