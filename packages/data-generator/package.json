@@ -1,26 +1,25 @@
 {
   "name": "olo-data-generator",
   "version": "1.0.1",
-  "main": "dist/main.js",
+  "main": "dist/index.js",
   "license": "MIT",
   "files": [
-    "dist/**"
+    "dist/**",
+    "dist/index.d.ts"
   ],
   "scripts": {
     "build": "rimraf dist && webpack",
     "build:watch": "webpack --watch",
     "lint:fix": "prettier --write \"**/*.{ts,js,json,md}\" && eslint --fix --ext .ts -c .eslintrc.js .",
     "lint": "prettier --check \"**/*.{ts,js,json,md}\" && eslint --ext .ts -c .eslintrc.js .",
+    "pack": "yarn pack",
     "test": "jest && npm run lint",
     "test:bundle": "jest",
     "test:coverage": "jest --coverageReporters=html",
     "test:debug": "node --inspect-brk ../../node_modules/jest-cli/bin/jest.js test --runInBand --no-cache"
   },
   "dependencies": {
-    "chance": "^1.1.4",
-    "husky": "^4.2.5",
-    "jest": "^25.5.4",
-    "lint-staged": "^10.2.4"
+    "chance": "^1.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",
@@ -39,7 +38,10 @@
     "eslint-import-resolver-webpack": "^0.12.1",
     "eslint-loader": "^4.0.2",
     "eslint-plugin-import": "^2.20.2",
+    "husky": "^4.2.5",
+    "jest": "^25.5.4",
     "jest-teamcity-reporter": "^0.9.0",
+    "lint-staged": "^10.2.4",
     "mini-css-extract-plugin": "^0.9.0",
     "prettier": "^2.0.5",
     "ts-loader": "^8.0.1",
@@ -62,6 +64,5 @@
       "eslint --fix -c .eslintrc.js",
       "git add"
     ]
-  },
-  "typings": "dist/index.d.ts"
+  }
 }

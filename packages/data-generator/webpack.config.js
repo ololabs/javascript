@@ -14,7 +14,7 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },
   externals: [nodeExternals({ modulesFromFile: { fileName: 'package.json' } })],
-  entry: { main: path.resolve('index.ts') },
+  entry: { index: path.resolve('index.ts') },
   plugins: [new webpack.WatchIgnorePlugin([/dist/])],
   module: {
     rules: [

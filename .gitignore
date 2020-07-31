@@ -35,3 +35,6 @@ node_modules
 **/bundles/*
 **/rev-manifest.json
 .npmrc
+
+# packaged assets
+*.tgz
