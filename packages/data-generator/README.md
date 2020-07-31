@@ -1,4 +1,4 @@
-# @olo/data-generator
+# olodata-generator
 
 For mock and demonstration purposes we have created a data generation module, which uses [Chance.js](https://chancejs.com) under the hood. This module allows a consumer to input a value, a count, and a seed for regeneration purposes, and output the value count times. The value must always be presented as a tuple, where the first item in the sequence is the type of data to generate, and the second may be an options object.
 
@@ -7,8 +7,7 @@ Taking the below example, you can see that the tuple we pass has an object for i
 Additionally the generator respects options passed to Chance utilities -- any string value it encounters which corresponds to the name of a Chance.js utility will call that utility and be passed the options object as its argument when called.
 
 ```jsx
-import { generate } from '@olo/design-system-shared/data';
-import { Button } from '@olo/design-system-react';
+import { generate } from 'olo-data-generator';
 
 const makeData = () =>
   generate(
@@ -30,5 +29,5 @@ const makeData = () =>
     Math.random() // seed, so we can randomize the data in this case (or use something predictable to reproduce results)
   );
 
-<Button.Button onclick={() => alert(JSON.stringify(makeData(), null, '\t'))}>Show me some data!</Button.Button>;
+<button onClick={() => alert(JSON.stringify(makeData(), null, '\t'))}>Show me some data!</button>;
 ```
