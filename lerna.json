@@ -7,7 +7,7 @@
   "version": "independent",
   "command": {
     "version": {
-      "allowBranch": "master"
+      "allowBranch": "version-bump"
     }
   },
   "useWorkspaces": true
