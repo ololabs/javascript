@@ -82,7 +82,7 @@ describe('styles', () => {
         );
         assert.ok(
             builtBundle.includes(
-                `body{font-family:'Courier New', Courier, monospace;color:rebeccapurple}`
+                `body{font-family:"Courier New",Courier,monospace;color:#639}` // we are checking the hex value because the sass compiler does not preserve color names
             )
         );
     });
