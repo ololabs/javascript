@@ -85,6 +85,10 @@ describe('styles', () => {
                 `body{font-family:"Courier New",Courier,monospace;color:#639}` // we are checking the hex value because the sass compiler does not preserve color names
             )
         );
+        assert.ok(
+            !builtBundle.includes('\uFEFF'), // BOM
+            'No BOM characters should be in the bundle.'
+        );
     });
 });
 
