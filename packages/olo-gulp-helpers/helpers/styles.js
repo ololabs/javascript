@@ -6,6 +6,8 @@ const concat = require("gulp-concat");
 const rev = require("gulp-rev");
 const sourcemaps = require("gulp-sourcemaps");
 const sass = require("gulp-dart-sass");
+const sassUnicode = require("gulp-sass-unicode");
+const stripBom = require("gulp-stripbom");
 const gulpif = require("gulp-if");
 const plumber = require("gulp-plumber");
 
@@ -27,6 +29,8 @@ function createBundle(
         outputStyle: "compressed"
       })
     )
+    .pipe(sassUnicode())
+    .pipe(stripBom({ showLog: false }))
     .pipe(concat({ path: bundleName, cwd: currentDirectory }))
     .pipe(rev())
     .pipe(sourcemaps.write("."))
