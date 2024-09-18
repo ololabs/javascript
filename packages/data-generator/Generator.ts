@@ -107,10 +107,7 @@ export class Generator {
   generate(count: number, depth: number): GenerateValues[] {
     if (count <= 0) return [];
 
-    // eslint-disable-next-line prefer-spread
-    return Array.apply(null, Array(count)).map(() =>
-      this.createSchema([this.schema, this.opts], { _currentDepth: depth })
-    );
+    return [...Array(count)].map(() => this.createSchema([this.schema, this.opts], { _currentDepth: depth }));
   }
 
   createSchema([schema, opts]: GenerateSchemaTuple, objectOpts: GenerateOptions): GenerateValues {

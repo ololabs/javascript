@@ -22,6 +22,7 @@
     "packages/data-generator"
   ],
   "resolutions": {
+    "@types/babel__traverse": "7.0.6",
     "minimist": "1.2.5"
   }
 }
